@@ -6,11 +6,11 @@ import {
   Roboto_400Regular,
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto';
+import { NavigationContainer } from '@react-navigation/native';
 
-import { StyleSheet, Text, View } from 'react-native';
-import { Home } from './src/pages/Home';
 import theme from './src/global/styles/theme';
 import AppLoading from 'expo-app-loading';
+import { Routes } from './src/routes';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -22,8 +22,10 @@ export default function App() {
     return <AppLoading />;
   }
   return (
-    <ThemeProvider theme={theme}>
-      <Home />
-    </ThemeProvider>
+    <NavigationContainer>
+      <ThemeProvider theme={theme}>
+        <Routes />
+      </ThemeProvider>
+    </NavigationContainer>
   );
 }
