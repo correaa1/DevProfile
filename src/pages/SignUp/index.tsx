@@ -1,9 +1,13 @@
 import React from 'react';
-import { KeyboardAvoidingView, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm, FieldValues } from 'react-hook-form';
 import { Button } from '../../components/Form/Button';
 import { InputControl } from '../../components/Form/InputControl';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+import { api } from '../../services/api';
 import {
   BackToSignIn,
   BackToSignInTitle,
@@ -15,17 +19,30 @@ import {
 } from './styles';
 import logo from '../../assets/marijuana.png';
 
+interface ScreenNavigationProp {
+  goBack: () => void;
+}
 interface IFormInputs {
   [name: string]: any;
 }
-
-interface ScreenNavigationProp {
-  goBack: (screen: string) => void;
-}
+const formSchema = yup.object({
+  name: yup.string().required('Informe o nome completo.'),
+  email: yup.string().email('Email inválido.').required('Informe o email.'),
+  password: yup.string().required('Informe a senha.'),
+});
 export const SignUp: React.FunctionComponent = () => {
-  const { handleSubmit, control } = useForm<FieldValues>();
-  const { goBack } = useNavigation();
-  const handleSignIn = (form: IFormInputs) => {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FieldValues>({
+    resolver: yupResolver(formSchema),
+  });
+
+  const { goBack } = useNavigation<ScreenNavigationProp>();
+
+  const handleSignUp = (form: IFormInputs) => {
+  const handleSignUp = async (form: IFormInputs) => {
     const data = {
       name: form.name,
       email: form.email,
@@ -33,6 +50,18 @@ export const SignUp: React.FunctionComponent = () => {
     };
 
     console.log(data);
+    try {
+      await api.post('users', data);
+      Alert.alert(
+        'Cadastro realizado',
+        'Você já pode fazer login na aplicação.',
+      );
+    } catch (error) {
+      Alert.alert(
+        'Erro no cadastro',
+        'Ocorreu um erro ao fazer o cadastro. Tente novamente.',
+      );
+    }
   };
   return (
     <KeyboardAvoidingView

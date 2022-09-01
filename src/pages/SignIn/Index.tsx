@@ -18,7 +18,7 @@ import {
   Logo,
   Title,
 } from './styles';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/marijuana.png';
 import { InputControl } from '../../components/Form/InputControl';
 interface ScreenNavigationProp {
   navigate: (screen: string) => void;
@@ -33,7 +33,11 @@ const formSchema = yup.object({
 });
 
 export const SignIn: React.FunctionComponent = () => {
-  const { handleSubmit, control, formState:{ errors } } = useForm<FieldValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FieldValues>({
     resolver: yupResolver(formSchema),
   });
 
@@ -69,7 +73,7 @@ export const SignIn: React.FunctionComponent = () => {
               name="email"
               placeholder="Email"
               keyboardType="email-address"
-              error={errors.email && errors.email.message}
+              error={undefined}
             />
             <InputControl
               control={control}
@@ -77,7 +81,7 @@ export const SignIn: React.FunctionComponent = () => {
               placeholder="Senha"
               autoCorrect={false}
               secureTextEntry
-              error={errors.password && errors.password.message}
+              error={undefined}
             />
 
             <Button title="Entrar" onPress={handleSubmit(handleSignIn)} />
