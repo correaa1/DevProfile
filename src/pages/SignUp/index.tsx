@@ -1,5 +1,10 @@
 import React from 'react';
-import { KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Alert,
+  Platform,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm, FieldValues } from 'react-hook-form';
 import { Button } from '../../components/Form/Button';
@@ -41,7 +46,6 @@ export const SignUp: React.FunctionComponent = () => {
 
   const { goBack } = useNavigation<ScreenNavigationProp>();
 
-  const handleSignUp = (form: IFormInputs) => {
   const handleSignUp = async (form: IFormInputs) => {
     const data = {
       name: form.name,
@@ -63,9 +67,10 @@ export const SignUp: React.FunctionComponent = () => {
       );
     }
   };
+
   return (
     <KeyboardAvoidingView
-      enable
+      enabled
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
@@ -82,32 +87,33 @@ export const SignUp: React.FunctionComponent = () => {
               autoCorrect={false}
               control={control}
               name="name"
-              placeholder=" Nome Completo"
+              placeholder="Nome completo"
+              error={undefined}
             />
             <InputControl
               autoCapitalize="none"
               autoCorrect={false}
               control={control}
               name="email"
-              placeholder=" Email"
+              placeholder="Email"
               keyboardType="email-address"
+              error={undefined}
             />
             <InputControl
-              autoCapitalize="none"
-              autoCorrect={false}
               control={control}
               name="password"
-              placeholder=" Senha"
+              placeholder="Senha"
+              autoCorrect={false}
               secureTextEntry
+              error={undefined}
             />
-
-            <Button title="Criar conta" />
+            <Button title="Entrar" onPress={handleSubmit(handleSignUp)} />
           </Content>
         </Container>
       </ScrollView>
       <BackToSignIn onPress={() => goBack()}>
         <Icon name="arrow-left" />
-        <BackToSignInTitle>Voltar para Logon</BackToSignInTitle>
+        <BackToSignInTitle>Voltar para logon</BackToSignInTitle>
       </BackToSignIn>
     </KeyboardAvoidingView>
   );
