@@ -1,5 +1,11 @@
 import React from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
+import {
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Alert,
+} from 'react-native';
 import { useForm, FieldValues } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -20,7 +26,7 @@ import {
 } from './styles';
 import logo from '../../assets/marijuana.png';
 import { InputControl } from '../../components/Form/InputControl';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 interface ScreenNavigationProp {
   navigate: (screen: string) => void;
 }
@@ -33,10 +39,8 @@ const formSchema = yup.object({
 });
 
 export const SignIn: React.FunctionComponent = () => {
-  const auth = React.useContext(AuthContext);
+  const { signIn } = useAuth();
   const [loading, setLoading] = React.useState(false);
-
-  console.log(auth);
 
   const {
     handleSubmit,
@@ -46,6 +50,7 @@ export const SignIn: React.FunctionComponent = () => {
     resolver: yupResolver(formSchema),
   });
   const { navigate } = useNavigation<ScreenNavigationProp>();
+
   const handleSignIn = (form: IFormInputs) => {
     const data = {
       email: form.email,
@@ -53,8 +58,16 @@ export const SignIn: React.FunctionComponent = () => {
     };
 
     console.log(data);
-    setLoading(true);
-    auth.signIn();
+
+    try {
+      setLoading(true);
+      signIn(data);
+    } catch (error) {
+      Alert.alert(
+        'Erro na autenticação',
+        'ocorreu um erro ao fazer login, verifique as credenciais',
+      );
+    }
   };
 
   return (
