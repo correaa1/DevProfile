@@ -1,5 +1,6 @@
 {
      "editor.formatOnPaste": true,
      "editor.formatOnSave": true,
-     "files.autoSave": "off"
+     "files.autoSave": "off",
+     "eslint.format.enable": true
 }

@@ -54,6 +54,7 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
       await AsyncStorage.setItem(userData, JSON.stringify(user));
       setData({ token, user });
     } catch (error) {
+      console.log(error);
       //throw new Error(error as string);
       Alert.alert(
         'Erro na autenticação',
