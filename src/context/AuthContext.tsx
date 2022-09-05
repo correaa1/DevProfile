@@ -14,6 +14,7 @@ interface ICredentials {
 interface IAuthContext {
   user: IUser;
   signIn(credentials: ICredentials): void;
+  signOut(): void;
 }
 interface IProps {
   children: React.ReactElement;
@@ -35,12 +36,19 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
     }
     loadAuthData();
   }, []);
+  const signOut = async () => {
+    await AsyncStorage.removeItem(tokenData);
+    await AsyncStorage.removeItem(userData);
+    setData({} as IAuthState);
+  };
+
   const signIn = async ({ email, password }: ICredentials) => {
     try {
       const response = await api.post('sessions', {
         email,
         password,
       });
+
       const { token, user } = response.data;
       await AsyncStorage.setItem(tokenData, token);
       await AsyncStorage.setItem(userData, JSON.stringify(user));
@@ -54,7 +62,7 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
     }
   };
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

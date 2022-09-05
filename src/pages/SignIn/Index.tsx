@@ -57,7 +57,6 @@ export const SignIn: React.FunctionComponent = () => {
       password: form.password,
     };
 
-    console.log(data);
 
     try {
       setLoading(true);
