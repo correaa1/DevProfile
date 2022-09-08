@@ -14,8 +14,7 @@ export const AuthRoutes: React.FunctionComponent = () => {
       <Auth.Screen name="SignIn" component={SignIn} />
       <Auth.Screen name="SignUp" component={SignUp} />
       <Auth.Screen name="ForgotPassword" component={ForgotPassword} />
-            <Auth.Screen name="ResetPassword" component={ResetPassword} />
-
+      <Auth.Screen name="ResetPassword" component={ResetPassword} />
     </Auth.Navigator>
   );
 };

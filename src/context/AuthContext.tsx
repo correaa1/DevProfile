@@ -15,6 +15,7 @@ interface IAuthContext {
   user: IUser;
   signIn(credentials: ICredentials): void;
   signOut(): void;
+  updateUser(user: IUser): void;
 }
 interface IProps {
   children: React.ReactElement;
@@ -32,6 +33,7 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
       const user = await AsyncStorage.getItem(userData);
       if (token && user) {
         setData({ token, user: JSON.parse(user) });
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
     }
     loadAuthData();
@@ -40,6 +42,14 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
     await AsyncStorage.removeItem(tokenData);
     await AsyncStorage.removeItem(userData);
     setData({} as IAuthState);
+  };
+
+  const updateUser = async (user: IUser) => {
+    await AsyncStorage.setItem(userData, JSON.stringify(user));
+    setData({
+      user,
+      token: data.token,
+    });
   };
 
   const signIn = async ({ email, password }: ICredentials) => {
@@ -52,6 +62,9 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
       const { token, user } = response.data;
       await AsyncStorage.setItem(tokenData, token);
       await AsyncStorage.setItem(userData, JSON.stringify(user));
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
       setData({ token, user });
     } catch (error) {
       console.log(error);
@@ -63,7 +76,9 @@ export const AuthProvider: React.FunctionComponent<IProps> = ({ children }) => {
     }
   };
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOut, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
